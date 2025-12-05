@@ -159,8 +159,20 @@
             text-align: center;
         }
         
-        .marquee-inner { animation: scroll 5s linear infinite; }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        /* --- MARQUEE FIX --- */
+        .marquee-container {
+            overflow: hidden;
+            width: 100%;
+        }
+        .marquee-inner { 
+            display: flex;
+            width: max-content; /* Vital: Forces container to fit text width */
+            animation: scroll 15s linear infinite; /* Slowed down for smoothness */
+        }
+        @keyframes scroll { 
+            0% { transform: translateX(0); } 
+            100% { transform: translateX(-50%); } 
+        }
 
     </style>
 </head>
@@ -575,7 +587,7 @@
     </section>
 
     <!-- SECTION 4: MARQUEE -->
-    <div class="bg-black py-10 overflow-hidden whitespace-nowrap border-y border-white/10">
+    <div class="marquee-container bg-black py-10 border-y border-white/10">
         <div class="marquee-inner flex gap-10 items-center">
             <span class="text-6xl md:text-8xl font-black text-transparent stroke-text" style="-webkit-text-stroke: 1px #5542ff;">ACE UNITY</span>
             <i class="ph-fill ph-star-four text-[#5542ff] text-4xl"></i>
@@ -736,9 +748,18 @@
                 else cursor.classList.remove('hovered');
             });
 
-            // Marquee Loop
+            // --- FIXED MARQUEE LOGIC ---
             const marqueeInner = document.querySelector('.marquee-inner');
-            if(marqueeInner) marqueeInner.innerHTML += marqueeInner.innerHTML; 
+            if(marqueeInner) {
+                const content = marqueeInner.innerHTML;
+                // Create a strip that repeats 4 times to ensure it's definitely wider than the viewport
+                // This prevents the "gap" or "snap" issue on large screens
+                const longStrip = content + content + content + content;
+                
+                // Now duplicate THAT strip to create the perfect infinite loop (First half + Second half)
+                // The CSS animation translates -50%, showing the second half seamlessly.
+                marqueeInner.innerHTML = longStrip + longStrip;
+            }
         });
     </script>
 </body>
