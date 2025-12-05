@@ -50,17 +50,13 @@
         /* --- HERO ANIMATION --- */
         .hero-container {
             position: relative;
-            width: 100vw;
-            height: 100vh;
+            width: 100vw; height: 100vh;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .mask-video-container {
-            width: 300px;
-            height: 400px;
+            width: 300px; height: 400px;
             overflow: hidden;
             position: relative;
             border-radius: 20px;
@@ -70,13 +66,12 @@
         }
 
         .bg-video {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
             transform: scale(1.2); 
         }
 
-        /* --- BENTO 3D CARD STYLES --- */
+        /* --- BENTO CARD STYLES --- */
         .bento-card {
             background: white;
             border-radius: 1.5rem;
@@ -102,11 +97,24 @@
         }
 
         .bento-bg {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
             transform: scale(1.1);
             transition: transform 0.1s linear;
+        }
+
+        /* --- OVERLAY SYSTEM --- */
+        .service-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #050505; /* Always dark for immersive feel */
+            z-index: 90;
+            transform: translateY(100%);
+            display: flex;
+            flex-direction: column;
+            color: #f3f4f6;
+            overflow-y: auto;
         }
 
         .text-special {
@@ -116,18 +124,20 @@
             line-height: 0.85;
         }
 
-        .outline-text {
-            -webkit-text-stroke: 1px rgba(0,0,0,0.2);
-            color: transparent;
+        .close-btn {
+            position: absolute;
+            top: 2rem; right: 2rem;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 110;
+            color: white;
         }
-        
-        /* Marquee */
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .marquee-inner {
-            animation: scroll 20s linear infinite;
+        .close-btn:hover {
+            background: white; color: black; transform: rotate(90deg);
         }
 
         /* --- CONTACT OVERLAY STYLES --- */
@@ -137,10 +147,10 @@
             width: 100%; height: 100%;
             background-color: var(--dark);
             z-index: 100;
-            transform: translateY(100%); /* Hidden by default */
+            transform: translateY(100%);
             display: flex;
             flex-direction: column;
-            color: var(--light);
+            color: #f3f4f6;
             overflow-y: auto;
         }
 
@@ -159,30 +169,23 @@
         .contact-input:focus {
             border-color: var(--primary);
         }
-        .contact-input::placeholder {
-            color: rgba(255,255,255,0.3);
+
+        /* Specific Page Styles */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+        .stat-item {
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
         }
         
-        .close-btn {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            z-index: 110;
-        }
-        .close-btn:hover {
-            background: white;
-            color: black;
-            transform: rotate(90deg);
-        }
+        .marquee-inner { animation: scroll 20s linear infinite; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
     </style>
 </head>
@@ -191,7 +194,7 @@
     <!-- CUSTOM CURSOR -->
     <div id="cursor"></div>
 
-    <!-- CONTACT FORM OVERLAY -->
+    <!-- 0. CONTACT OVERLAY -->
     <div id="contact-overlay">
         <button class="close-btn" onclick="toggleContact()">
             <i class="ph-bold ph-x text-xl"></i>
@@ -211,36 +214,215 @@
                             <h4 class="text-xs font-bold text-[#5542ff] uppercase mb-2">Contact</h4>
                             <p class="text-xl">hello@aceunity.com</p>
                         </div>
-                        <div>
-                            <h4 class="text-xs font-bold text-[#5542ff] uppercase mb-2">Location</h4>
-                            <p class="text-xl">New York, NY <br> 10012 SoHo</p>
-                        </div>
                     </div>
                 </div>
 
                 <!-- Right: Form -->
                 <form class="space-y-8" onsubmit="event.preventDefault(); alert('Message Sent!'); toggleContact();">
                     <div class="group">
-                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">What's your name?</label>
+                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">Name</label>
                         <input type="text" class="contact-input" placeholder="John Doe">
                     </div>
                     <div class="group">
-                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">What's your email?</label>
+                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">Email</label>
                         <input type="email" class="contact-input" placeholder="john@example.com">
                     </div>
                     <div class="group">
-                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">What services do you need?</label>
-                        <input type="text" class="contact-input" placeholder="Web Design, Ads, Branding...">
-                    </div>
-                    <div class="group">
-                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">Tell us about your project</label>
-                        <textarea class="contact-input resize-none" rows="3" placeholder="Hello Ace Unity..."></textarea>
+                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">Message</label>
+                        <textarea class="contact-input resize-none" rows="2" placeholder="Tell us about your project..."></textarea>
                     </div>
                     
                     <button type="submit" class="bg-[#5542ff] text-white px-10 py-4 rounded-full font-bold text-sm uppercase hover:bg-white hover:text-black transition-all mt-8 w-full md:w-auto">
                         Send Message
                     </button>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. PAID ADS OVERLAY -->
+    <div id="overlay-ads" class="service-overlay">
+        <button class="close-btn" onclick="closeOverlay('overlay-ads')"><i class="ph-bold ph-x text-xl"></i></button>
+        <div class="min-h-screen p-6 md:p-20">
+            <div class="max-w-7xl mx-auto mt-20">
+                <div class="inline-block border border-[#5542ff] text-[#5542ff] px-4 py-1 rounded-full text-xs font-mono mb-6 uppercase">Paid Media</div>
+                <h1 class="text-special text-6xl md:text-9xl mb-8">SCALE WITHOUT <br> LIMITS</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mt-12">
+                    <p class="text-xl text-gray-400 leading-relaxed">
+                        We combine algorithmic targeting with world-class creative to dominate feed environments. From Meta to TikTok, we stop the scroll.
+                    </p>
+                    <div class="stat-grid mt-0">
+                        <div class="stat-item"><div class="text-4xl font-bold mb-2">4.5x</div><div class="text-xs text-gray-500 uppercase">Avg ROAS</div></div>
+                        <div class="stat-item"><div class="text-4xl font-bold mb-2">$50M+</div><div class="text-xs text-gray-500 uppercase">Spend Managed</div></div>
+                    </div>
+                </div>
+
+                <div class="mt-32">
+                    <h3 class="text-2xl font-bold mb-8 text-[#5542ff]">THE BANNER LAB</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Creative Showcase -->
+                        <div class="aspect-video bg-[#1a1a1a] rounded-xl overflow-hidden relative group">
+                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2670" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div class="absolute bottom-4 left-4 font-bold">Cyberpunk Campaign</div>
+                        </div>
+                        <div class="aspect-video bg-[#1a1a1a] rounded-xl overflow-hidden relative group">
+                            <img src="https://images.unsplash.com/photo-1614728263952-84ea256f9679?q=80&w=2679" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div class="absolute bottom-4 left-4 font-bold">Fluid Motion</div>
+                        </div>
+                        <div class="aspect-video bg-[#1a1a1a] rounded-xl overflow-hidden relative group">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div class="absolute bottom-4 left-4 font-bold">Neon Product</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-20 text-center">
+                    <button onclick="closeOverlay('overlay-ads'); toggleContact()" class="bg-[#5542ff] text-white px-12 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-black transition-all">Start Campaign</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. WEB DEV OVERLAY -->
+    <div id="overlay-web" class="service-overlay">
+        <button class="close-btn" onclick="closeOverlay('overlay-web')"><i class="ph-bold ph-x text-xl"></i></button>
+        <div class="min-h-screen p-6 md:p-20">
+            <div class="max-w-7xl mx-auto mt-20">
+                <div class="inline-block border border-green-500 text-green-500 px-4 py-1 rounded-full text-xs font-mono mb-6 uppercase">Development</div>
+                <h1 class="text-special text-6xl md:text-9xl mb-8">DIGITAL <br> ARCHITECTURE</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mt-12">
+                    <div>
+                        <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                            We build high-performance, immersive websites using the bleeding edge of web technology. WebGL, React, and Three.js are our standard tools.
+                        </p>
+                        <ul class="space-y-4 font-mono text-sm text-gray-300">
+                            <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-green-500"></i> Interactive 3D Experiences</li>
+                            <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-green-500"></i> Headless CMS Architecture</li>
+                            <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-green-500"></i> E-commerce Optimization</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-[#111] rounded-2xl p-8 border border-white/10 font-mono text-xs text-green-400 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-green-500/5"></div>
+                        <p>&gt; npm install ace-unity-stack</p>
+                        <p class="mt-2">&gt; installing dependencies...</p>
+                        <p class="mt-1 text-gray-500"> + react@18.2.0</p>
+                        <p class="text-gray-500"> + three@0.154.0</p>
+                        <p class="text-gray-500"> + gsap@3.12.0</p>
+                        <p class="mt-4">&gt; build complete. [100%]</p>
+                        <p class="mt-2 text-white blink">_</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. BRANDING OVERLAY -->
+    <div id="overlay-branding" class="service-overlay">
+        <button class="close-btn" onclick="closeOverlay('overlay-branding')"><i class="ph-bold ph-x text-xl"></i></button>
+        <div class="min-h-screen p-6 md:p-20 bg-[#5542ff] text-white"> <!-- Branding has specific brand color bg -->
+            <div class="max-w-7xl mx-auto mt-20">
+                <div class="inline-block border border-white px-4 py-1 rounded-full text-xs font-mono mb-6 uppercase">Identity</div>
+                <h1 class="text-special text-6xl md:text-9xl mb-8">CUT THROUGH <br> THE NOISE</h1>
+                
+                <p class="text-xl text-white/80 leading-relaxed max-w-2xl mt-12">
+                    A brand is not just a logo. It's a feeling. We craft visual identities, voice guidelines, and design systems that make your business unforgettable.
+                </p>
+
+                <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="aspect-square bg-white text-[#5542ff] flex items-center justify-center font-bold text-xl rounded-lg">Logo</div>
+                    <div class="aspect-square bg-black text-white flex items-center justify-center font-bold text-xl rounded-lg">Typography</div>
+                    <div class="aspect-square bg-[#ff3366] text-white flex items-center justify-center font-bold text-xl rounded-lg">Color</div>
+                    <div class="aspect-square bg-white text-black flex items-center justify-center font-bold text-xl rounded-lg">Voice</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. STRATEGY OVERLAY (Updated Dark Aesthetic) -->
+    <div id="overlay-strategy" class="service-overlay">
+        <button class="close-btn !border-white/10 !text-white hover:!bg-white hover:!text-black" onclick="closeOverlay('overlay-strategy')">
+            <i class="ph-bold ph-x text-xl"></i>
+        </button>
+        
+        <div class="min-h-screen p-6 md:p-20 bg-[#050505] text-white">
+            <div class="max-w-7xl mx-auto mt-16">
+                <!-- Header Section -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-white/10 pb-12 mb-16">
+                    <div>
+                        <div class="inline-flex items-center gap-2 border border-white/20 px-3 py-1 rounded-full text-xs font-mono mb-6 uppercase tracking-widest text-gray-300">
+                            <span class="w-2 h-2 rounded-full bg-[#5542ff]"></span> Consulting
+                        </div>
+                        <h1 class="text-special text-6xl md:text-9xl leading-[0.9] tracking-tighter mt-4">
+                            THE ROADMAP <br> 
+                            <span class="text-transparent" style="-webkit-text-stroke: 1px white;">TO</span> 
+                            <span class="bg-[#5542ff] text-white px-6 pt-2 pb-4 rounded-[2rem] inline-block ml-2 transform -skew-x-3">VICTORY</span>
+                        </h1>
+                    </div>
+                    <p class="text-lg text-gray-400 max-w-sm mt-8 md:mt-0 font-medium md:text-right md:mb-4">
+                        We don't guess. We execute a battle-tested framework designed to capture market share.
+                    </p>
+                </div>
+                
+                <!-- Aesthetic Process Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Card 01 -->
+                    <div class="group relative bg-[#111] p-10 rounded-3xl border border-white/5 hover:border-[#5542ff]/50 transition-all duration-500 overflow-hidden">
+                        <div class="absolute -right-4 -top-4 text-9xl font-black text-white/5 select-none font-special group-hover:text-white/10 transition-colors">01</div>
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 bg-white/5 rounded-full flex items-center justify-center mb-8 group-hover:bg-[#5542ff] transition-colors duration-300">
+                                <i class="ph-bold ph-magnifying-glass text-2xl text-white"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold mb-4 text-white">AUDIT</h3>
+                            <p class="text-gray-500 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">
+                                We dismantle your current presence to find leaks in the funnel. Deep dive into data, UX, and competitor positioning.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 02 -->
+                    <div class="group relative bg-[#111] p-10 rounded-3xl border border-white/5 hover:border-[#5542ff]/50 transition-all duration-500 overflow-hidden">
+                        <div class="absolute -right-4 -top-4 text-9xl font-black text-white/5 select-none font-special group-hover:text-white/10 transition-colors">02</div>
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 bg-white/5 rounded-full flex items-center justify-center mb-8 group-hover:bg-[#5542ff] transition-colors duration-300">
+                                <i class="ph-bold ph-crosshair text-2xl text-white"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold mb-4 text-white">EXECUTION</h3>
+                            <p class="text-gray-500 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">
+                                A step-by-step quarterly roadmap. We define the channels, the creative angles, and the budget required to win.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 03 -->
+                    <div class="group relative bg-[#111] p-10 rounded-3xl border border-white/5 hover:border-[#5542ff]/50 transition-all duration-500 overflow-hidden">
+                        <div class="absolute -right-4 -top-4 text-9xl font-black text-white/5 select-none font-special group-hover:text-white/10 transition-colors">03</div>
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 bg-white/5 rounded-full flex items-center justify-center mb-8 group-hover:bg-[#5542ff] transition-colors duration-300">
+                                <i class="ph-bold ph-trend-up text-2xl text-white"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold mb-4 text-white">SCALE</h3>
+                            <p class="text-gray-500 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">
+                                Continuous data analysis. We kill what fails, double down on what works, and expand into new territories.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom CTA -->
+                <div class="mt-16 p-12 rounded-3xl border border-white/10 flex flex-col md:flex-row justify-between items-center group cursor-pointer hover:bg-white hover:text-black transition-colors duration-500" onclick="toggleContact()">
+                    <div>
+                        <h4 class="text-2xl font-bold mb-2">Ready to strategize?</h4>
+                        <p class="text-gray-500 group-hover:text-gray-600">Book a free discovery call.</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-black/20 group-hover:bg-black group-hover:text-white transition-all mt-6 md:mt-0">
+                        <i class="ph-bold ph-arrow-right"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -257,7 +439,7 @@
             <a href="#work" class="hover:opacity-50 transition-opacity">Work</a>
             <a onclick="toggleContact()" class="hover:opacity-50 transition-opacity cursor-pointer">Contact</a>
         </div>
-        <button onclick="toggleContact()" class="bg-[#DFDFF0] text-black px-6 py-2 rounded-full font-bold text-xs uppercase hover:scale-110 transition-transform cursor-pointer">
+        <button onclick="toggleContact()" class="bg-[#DFDFF0] text-black px-6 py-2 rounded-full font-bold text-xs uppercase hover:scale-110 transition-transform">
             Let's Talk
         </button>
     </nav>
@@ -273,7 +455,6 @@
             <video autoplay loop muted playsinline class="bg-video">
                 <source src="https://joy1.videvo.net/videvo_files/video/free/2019-11/large_watermarked/190301_1_25_11_preview.mp4" type="video/mp4">
             </video>
-            <!-- Content initially hidden -->
             <div id="hero-content" class="absolute inset-0 flex flex-col items-center justify-center z-20 text-white text-center p-4 opacity-0">
                 <h1 class="text-special text-6xl md:text-9xl mb-2 mix-blend-overlay">DOMINATE</h1>
                 <p class="font-mono text-xs md:text-sm tracking-widest uppercase opacity-80 mix-blend-overlay">Ads / Web / Strategy</p>
@@ -285,43 +466,42 @@
     <!-- SECTION 2: ABOUT -->
     <section id="about" class="min-h-screen flex items-center justify-center py-20 px-6 relative overflow-hidden">
         <div class="max-w-6xl mx-auto text-center relative z-10">
-            <p class="text-xs font-bold uppercase tracking-widest text-[#5542ff] mb-8" id="about-label">Who We Are</p>
+            <p class="text-xs font-bold uppercase tracking-widest text-[#5542ff] mb-8">Who We Are</p>
             <h2 class="text-special text-5xl md:text-8xl leading-none mb-12 split-text">
                 WE FORGE <br> <span class="text-[#5542ff]">DIGITAL EMPIRES</span> <br> FROM CHAOS.
             </h2>
             <p class="max-w-xl mx-auto text-lg md:text-xl text-gray-600 leading-relaxed">
-                Ace Unity is not just an agency. We are a growth accelerator. From high-converting <span class="font-bold text-black">Google & FB Ads</span> to award-winning <span class="font-bold text-black">Web Experiences</span>, we build the infrastructure for market dominance.
+                Ace Unity is not just an agency. We are a growth accelerator.
             </p>
         </div>
-        <div class="absolute top-20 right-20 w-32 h-32 bg-black rounded-full mix-blend-multiply opacity-10 animate-pulse"></div>
-        <div class="absolute bottom-20 left-20 w-64 h-64 bg-[#5542ff] rounded-full mix-blend-multiply opacity-10 filter blur-3xl"></div>
     </section>
 
-    <!-- SECTION 3: SERVICES (Refined 3D Depth) -->
+    <!-- SECTION 3: SERVICES (CLICKABLE BENTO GRID) -->
     <section id="services" class="py-20 px-4 bg-white rounded-t-[3rem] relative z-20">
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-end mb-16 px-4">
                 <h2 class="text-special text-6xl md:text-9xl text-black">OUR <br> ARSENAL</h2>
                 <div class="text-right hidden md:block">
                     <p class="font-mono text-xs text-gray-400 uppercase">System Status: <span class="text-green-500">Online</span></p>
-                    <p class="font-mono text-xs text-gray-400 uppercase">Location: Global</p>
                 </div>
             </div>
 
-            <!-- BENTO GRID -->
             <div class="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6 h-auto md:h-[800px] perspective-container">
                 
-                <!-- Box 1: Ads (Large Vertical) -->
-                <div class="bento-card md:col-span-1 md:row-span-2 group cursor-pointer bg-black text-white tilt-active">
+                <!-- 1. PAID ADS (Clickable) -->
+                <div class="bento-card md:col-span-1 md:row-span-2 group cursor-pointer bg-black text-white tilt-active" onclick="openOverlay('overlay-ads')">
                     <div class="bento-bg-wrapper">
                         <video autoplay loop muted playsinline class="bento-bg opacity-60 group-hover:opacity-40 transition-opacity">
                             <source src="https://joy1.videvo.net/videvo_files/video/free/2015-09/large_watermarked/Possibility_1_preview.mp4" type="video/mp4">
                         </video>
                     </div>
                     <div class="bento-content absolute bottom-0 left-0 p-8 w-full z-10">
-                        <i class="ph-bold ph-megaphone text-4xl mb-4 text-[#5542ff]"></i>
+                        <div class="flex justify-between items-start mb-4">
+                            <i class="ph-bold ph-target text-4xl text-[#5542ff]"></i>
+                            <i class="ph-bold ph-arrow-up-right text-white text-xl opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
                         <h3 class="text-4xl font-bold font-sans mb-2">PAID ADS</h3>
-                        <p class="text-sm text-gray-300 leading-relaxed mb-4">Precision targeting on Facebook & Google. We don't just run ads; we engineer ROI.</p>
+                        <p class="text-sm text-gray-300 leading-relaxed mb-4">Click to view scaling strategies.</p>
                         <div class="flex gap-2 text-[10px] uppercase font-bold tracking-widest">
                             <span class="border border-white/30 px-2 py-1 rounded">Meta</span>
                             <span class="border border-white/30 px-2 py-1 rounded">PPC</span>
@@ -329,42 +509,39 @@
                     </div>
                 </div>
 
-                <!-- Box 2: Web Dev (Wide Horizontal) -->
-                <div class="bento-card md:col-span-2 md:row-span-1 group cursor-pointer bg-[#F0F0F0] flex flex-col md:flex-row overflow-hidden tilt-active">
+                <!-- 2. WEB DEV (Clickable) -->
+                <div class="bento-card md:col-span-2 md:row-span-1 group cursor-pointer bg-[#F0F0F0] flex flex-col md:flex-row overflow-hidden tilt-active" onclick="openOverlay('overlay-web')">
                     <div class="bento-content p-8 flex flex-col justify-between w-full md:w-1/2 relative z-10">
                         <div>
                             <i class="ph-bold ph-desktop text-4xl mb-4 text-black"></i>
                             <h3 class="text-4xl font-bold font-sans mb-2">WEB DEV</h3>
                         </div>
-                        <p class="text-sm text-gray-600 leading-relaxed">Interactive, 3D, and high-performance websites. Digital flagships that convert.</p>
+                        <p class="text-sm text-gray-600 leading-relaxed">Interactive, 3D, and high-performance websites.</p>
                     </div>
-                    <div class="w-full md:w-1/2 bg-black relative overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-                        <!-- Parallax Background Layer -->
-                        <div class="bento-bg-wrapper">
-                            <div class="bento-bg absolute inset-0 opacity-20" style="background-image: radial-gradient(#5542ff 1px, transparent 1px); background-size: 20px 20px;"></div>
-                        </div>
-                        <div class="text-[#5542ff] font-mono text-xs p-4 opacity-80 transform translate-z-10 relative z-10">
-                            &lt;div class="future"&gt;<br>&nbsp;&nbsp;Launch.init();<br>&nbsp;&nbsp;Growth.scale();<br>&lt;/div&gt;
+                    <div class="w-full md:w-1/2 bg-black relative overflow-hidden flex items-center justify-center bento-bg group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#5542ff 1px, transparent 1px); background-size: 20px 20px;"></div>
+                        <div class="text-[#5542ff] font-mono text-xs p-4 opacity-80 transform translate-z-10">
+                            &lt;div class="view"&gt;Explore&lt;/div&gt;
                         </div>
                     </div>
                 </div>
 
-                <!-- Box 3: Branding (Small) -->
-                <div class="bento-card md:col-span-1 md:row-span-1 group cursor-pointer bg-[#5542ff] text-white p-8 flex flex-col justify-between tilt-active">
+                <!-- 3. BRANDING (Clickable) -->
+                <div class="bento-card md:col-span-1 md:row-span-1 group cursor-pointer bg-[#5542ff] text-white p-8 flex flex-col justify-between tilt-active" onclick="openOverlay('overlay-branding')">
                     <div class="bento-content flex justify-between items-start">
                         <h3 class="text-3xl font-bold font-sans">BRANDING</h3>
                         <i class="ph-bold ph-paint-brush-broad text-2xl"></i>
                     </div>
-                    <p class="bento-content text-sm opacity-90 transform translate-z-10">Identity design that cuts through the noise. Logos, voice, and aesthetic.</p>
+                    <p class="bento-content text-sm opacity-90 transform translate-z-10">Identity design that cuts through the noise.</p>
                 </div>
 
-                <!-- Box 4: Strategy (Small) -->
-                <div class="bento-card md:col-span-1 md:row-span-1 group cursor-pointer bg-white p-8 flex flex-col justify-between tilt-active">
+                <!-- 4. STRATEGY (Clickable) -->
+                <div class="bento-card md:col-span-1 md:row-span-1 group cursor-pointer bg-white p-8 flex flex-col justify-between tilt-active" onclick="openOverlay('overlay-strategy')">
                     <div class="bento-content flex justify-between items-start">
                         <h3 class="text-3xl font-bold font-sans">STRATEGY</h3>
                         <i class="ph-bold ph-strategy text-2xl text-black"></i>
                     </div>
-                    <p class="bento-content text-sm text-gray-600 transform translate-z-10">Market analysis and growth hacking roadmaps.</p>
+                    <p class="bento-content text-sm text-gray-600 transform translate-z-10">Market analysis and roadmaps.</p>
                 </div>
 
             </div>
@@ -379,76 +556,22 @@
             <span class="text-6xl md:text-8xl font-black text-white">WEB DESIGN</span>
             <i class="ph-fill ph-star-four text-[#5542ff] text-4xl"></i>
             <span class="text-6xl md:text-8xl font-black text-transparent stroke-text" style="-webkit-text-stroke: 1px #5542ff;">GOOGLE ADS</span>
-            <i class="ph-fill ph-star-four text-[#5542ff] text-4xl"></i>
-            <span class="text-6xl md:text-8xl font-black text-white">FACEBOOK ADS</span>
-            <i class="ph-fill ph-star-four text-[#5542ff] text-4xl"></i>
-             <span class="text-6xl md:text-8xl font-black text-transparent stroke-text" style="-webkit-text-stroke: 1px #5542ff;">ACE UNITY</span>
         </div>
     </div>
 
-    <!-- SECTION 5: WORK -->
-    <section id="work" class="bg-black text-[#DFDFF0] py-32 px-6">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-special text-5xl md:text-8xl mb-20">SELECTED WORKS</h2>
-
-            <div class="space-y-32">
-                <!-- Project 1 -->
-                <div class="group relative flex flex-col md:flex-row gap-10 items-center">
-                    <div class="w-full md:w-2/3 h-[50vh] overflow-hidden rounded-2xl relative bento-card tilt-active">
-                        <div class="bento-bg-wrapper">
-                            <img src="https://images.unsplash.com/photo-1481487196290-c152efe083f5?q=80&w=2662&auto=format&fit=crop" class="bento-bg w-full h-full object-cover grayscale group-hover:grayscale-0">
-                        </div>
-                    </div>
-                    <div class="w-full md:w-1/3">
-                        <div class="text-[#5542ff] font-mono text-xs mb-4">01 // E-COMMERCE</div>
-                        <h3 class="text-4xl font-bold mb-4">NEON MARKET</h3>
-                        <p class="text-gray-400 mb-6">Complete brand overhaul and Shopify development resulted in 200% sales increase.</p>
-                        <ul class="flex gap-4 text-xs font-bold uppercase tracking-widest text-white/50">
-                            <li>Design</li>
-                            <li>Dev</li>
-                            <li>Ads</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Project 2 -->
-                <div class="group relative flex flex-col md:flex-row-reverse gap-10 items-center">
-                    <div class="w-full md:w-2/3 h-[50vh] overflow-hidden rounded-2xl relative bento-card tilt-active">
-                        <div class="bento-bg-wrapper">
-                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2670&auto=format&fit=crop" class="bento-bg w-full h-full object-cover grayscale group-hover:grayscale-0">
-                        </div>
-                    </div>
-                    <div class="w-full md:w-1/3 text-right">
-                        <div class="text-[#5542ff] font-mono text-xs mb-4">02 // SAAS</div>
-                        <h3 class="text-4xl font-bold mb-4">DATA FLOW</h3>
-                        <p class="text-gray-400 mb-6">Interactive WebGL landing page for a Series A data startup.</p>
-                         <ul class="flex gap-4 justify-end text-xs font-bold uppercase tracking-widest text-white/50">
-                            <li>3D</li>
-                            <li>React</li>
-                            <li>Strategy</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 6: FOOTER -->
+    <!-- SECTION 5: FOOTER -->
     <footer id="contact" class="bg-black text-[#DFDFF0] pt-20 pb-10 px-6 border-t border-white/10 relative overflow-hidden">
         <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none pointer-events-none opacity-10">
             <h1 class="text-[20vw] font-black text-center text-white/10 uppercase" style="line-height: 0.8;">UNITY</h1>
         </div>
-
         <div class="max-w-7xl mx-auto relative z-10 flex flex-col items-center text-center">
             <p class="text-[#5542ff] font-mono text-sm mb-6">READY TO START?</p>
             <h2 class="text-special text-5xl md:text-8xl mb-12 hover:text-[#5542ff] transition-colors cursor-pointer" onclick="toggleContact()">
                 LET'S BUILD <br> THE FUTURE.
             </h2>
-            
             <button onclick="toggleContact()" class="bg-white text-black px-12 py-4 rounded-full font-bold text-lg hover:bg-[#5542ff] hover:text-white transition-all hover:scale-105 duration-300">
                 Start a Project
             </button>
-
             <div class="grid grid-cols-2 md:grid-cols-4 gap-12 mt-32 w-full text-left">
                 <div>
                     <h4 class="font-bold mb-4 text-[#5542ff]">SOCIALS</h4>
@@ -475,52 +598,53 @@
         </div>
     </footer>
 
-    <!-- ANIMATION LOGIC -->
+    <!-- LOGIC -->
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // CONTACT TOGGLE LOGIC
-        let isContactOpen = false; // State tracker
+        // --- OVERLAY LOGIC ---
+        function openOverlay(id) {
+            const overlay = document.getElementById(id);
+            if(overlay) {
+                gsap.to(overlay, { y: "0%", duration: 0.8, ease: "power4.inOut" });
+                document.body.style.overflow = "hidden"; // Lock Scroll
+            }
+        }
 
+        function closeOverlay(id) {
+            const overlay = document.getElementById(id);
+            if(overlay) {
+                gsap.to(overlay, { y: "100%", duration: 0.8, ease: "power4.inOut" });
+                document.body.style.overflow = "auto"; // Unlock Scroll
+            }
+        }
+
+        // --- CONTACT LOGIC ---
+        let isContactOpen = false;
         function toggleContact() {
             const overlay = document.getElementById('contact-overlay');
-            
-            if (!isContactOpen) {
-                // Open
+            if(!isContactOpen) {
                 gsap.to(overlay, { y: "0%", duration: 0.8, ease: "power4.inOut" });
                 isContactOpen = true;
             } else {
-                // Close
                 gsap.to(overlay, { y: "100%", duration: 0.8, ease: "power4.inOut" });
                 isContactOpen = false;
             }
         }
 
-        // 1. HERO ANIMATION (Fixed Text Fade In)
+        // 1. HERO ANIMATION
         const tl = gsap.timeline({
             scrollTrigger: {
                 trigger: "#hero-section",
-                start: "top top",
-                end: "+=150%",
-                scrub: 1,
-                pin: true
+                start: "top top", end: "+=150%", scrub: 1, pin: true
             }
         });
-        
-        // Expand the mask
         tl.to("#hero-mask", {
-            width: "100%",
-            height: "100%",
-            borderRadius: "0px",
+            width: "100%", height: "100%", borderRadius: "0px",
             clipPath: "polygon(0% 0, 100% 0, 100% 100%, 100% 100%, 0 100%, 0 0)",
             ease: "power2.inOut"
         })
-        // Fade IN the text (DOMINATE) as it expands
-        .to("#hero-content", {
-            opacity: 1,
-            duration: 0.5,
-            ease: "power2.inOut"
-        }, "-=0.5"); // Overlap slightly with expansion
+        .to("#hero-content", { opacity: 1, duration: 0.5 }, "-=0.5");
 
         // 2. TEXT REVEALS
         gsap.from(".split-text", {
@@ -528,86 +652,52 @@
             y: 100, opacity: 0, duration: 1, ease: "power4.out"
         });
 
-        // 3. STAGGERED BENTO REVEAL
+        // 3. BENTO REVEAL
         gsap.from(".bento-card", {
             scrollTrigger: { trigger: "#services", start: "top 80%" },
             y: 100, opacity: 0, stagger: 0.1, duration: 1, ease: "power2.out"
         });
 
-        // 4. CUSTOM CURSOR
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            const target = e.target;
-            if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('.bento-card') || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-                cursor.classList.add('hovered');
-            } else {
-                cursor.classList.remove('hovered');
-            }
-        });
-
-        // 5. TRUE DEPTH PARALLAX LOGIC (Refined)
+        // 4. 3D TILT
         document.querySelectorAll('.tilt-active').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                
-                // Tilt Frame
                 const rotateX = ((y - centerY) / centerY) * -15; 
                 const rotateY = ((x - centerX) / centerX) * 15;
-
-                // Move Background Image (Parallax Opposing Movement)
-                const bgX = ((x - centerX) / centerX) * -20; // Move opposite
+                const bgX = ((x - centerX) / centerX) * -20;
                 const bgY = ((y - centerY) / centerY) * -20;
 
-                // Animate Card Tilt
                 gsap.to(card, {
                     transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(0.98, 0.98, 0.98)`,
-                    duration: 0.4,
-                    ease: "power2.out"
+                    duration: 0.4, ease: "power2.out"
                 });
-
-                // Animate Background Position
                 const bg = card.querySelector('.bento-bg');
-                if(bg) {
-                    gsap.to(bg, {
-                        x: bgX,
-                        y: bgY,
-                        duration: 0.4,
-                        ease: "power2.out"
-                    });
-                }
+                if(bg) gsap.to(bg, { x: bgX, y: bgY, duration: 0.4, ease: "power2.out" });
             });
 
             card.addEventListener('mouseleave', () => {
-                // Reset Card
-                gsap.to(card, {
-                    transform: `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`,
-                    duration: 0.5,
-                    ease: "power2.out"
-                });
-
-                // Reset Background
+                gsap.to(card, { transform: `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`, duration: 0.5, ease: "power2.out" });
                 const bg = card.querySelector('.bento-bg');
-                if(bg) {
-                    gsap.to(bg, {
-                        x: 0,
-                        y: 0,
-                        duration: 0.5,
-                        ease: "power2.out"
-                    });
-                }
+                if(bg) gsap.to(bg, { x: 0, y: 0, duration: 0.5, ease: "power2.out" });
             });
         });
 
-        // 6. MARQUEE LOOP
+        // 5. CUSTOM CURSOR
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            if (e.target.closest('a, button, .bento-card, .close-btn, .group')) cursor.classList.add('hovered');
+            else cursor.classList.remove('hovered');
+        });
+
+        // Marquee Loop
         const marqueeInner = document.querySelector('.marquee-inner');
-        marqueeInner.innerHTML += marqueeInner.innerHTML; 
+        if(marqueeInner) marqueeInner.innerHTML += marqueeInner.innerHTML; 
 
     </script>
 </body>
