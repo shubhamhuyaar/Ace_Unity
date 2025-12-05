@@ -73,7 +73,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Scale up slightly to allow parallax movement without showing edges */
             transform: scale(1.2); 
         }
 
@@ -81,7 +80,7 @@
         .bento-card {
             background: white;
             border-radius: 1.5rem;
-            overflow: hidden; /* Essential for masking the moving image */
+            overflow: hidden;
             position: relative;
             border: 1px solid rgba(0,0,0,0.05);
             transform-style: preserve-3d;
@@ -90,14 +89,13 @@
         
         .bento-content {
             transform-style: preserve-3d;
-            transform: translateZ(30px); /* Text floats above image */
-            pointer-events: none; /* Let mouse pass through to card */
+            transform: translateZ(30px);
+            pointer-events: none;
         }
         
-        /* The Parallax Layer */
         .bento-bg-wrapper {
             position: absolute;
-            inset: -20px; /* Make it larger than container */
+            inset: -20px;
             width: calc(100% + 40px);
             height: calc(100% + 40px);
             z-index: 0;
@@ -107,8 +105,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scale(1.1); /* Ensure coverage during movement */
-            transition: transform 0.1s linear; /* Smooth follow */
+            transform: scale(1.1);
+            transition: transform 0.1s linear;
         }
 
         .text-special {
@@ -131,12 +129,121 @@
         .marquee-inner {
             animation: scroll 20s linear infinite;
         }
+
+        /* --- CONTACT OVERLAY STYLES --- */
+        #contact-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--dark);
+            z-index: 100;
+            transform: translateY(100%); /* Hidden by default */
+            display: flex;
+            flex-direction: column;
+            color: var(--light);
+            overflow-y: auto;
+        }
+
+        .contact-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding: 1rem 0;
+            font-size: 1.5rem;
+            color: white;
+            outline: none;
+            transition: border-color 0.3s;
+            border-radius: 0;
+        }
+        .contact-input:focus {
+            border-color: var(--primary);
+        }
+        .contact-input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 110;
+        }
+        .close-btn:hover {
+            background: white;
+            color: black;
+            transform: rotate(90deg);
+        }
+
     </style>
 </head>
 <body>
 
     <!-- CUSTOM CURSOR -->
     <div id="cursor"></div>
+
+    <!-- CONTACT FORM OVERLAY -->
+    <div id="contact-overlay">
+        <button class="close-btn" onclick="toggleContact()">
+            <i class="ph-bold ph-x text-xl"></i>
+        </button>
+        
+        <div class="flex-grow flex items-center justify-center p-6 md:p-20">
+            <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-20">
+                <!-- Left: Info -->
+                <div class="space-y-12">
+                    <div>
+                        <h2 class="text-special text-5xl md:text-7xl mb-6">LET'S START <br> A PROJECT</h2>
+                        <p class="text-gray-400 text-lg">We help ambitious brands define the next generation of digital experiences.</p>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-xs font-bold text-[#5542ff] uppercase mb-2">Contact</h4>
+                            <p class="text-xl">hello@aceunity.com</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-[#5542ff] uppercase mb-2">Location</h4>
+                            <p class="text-xl">New York, NY <br> 10012 SoHo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Form -->
+                <form class="space-y-8" onsubmit="event.preventDefault(); alert('Message Sent!'); toggleContact();">
+                    <div class="group">
+                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">What's your name?</label>
+                        <input type="text" class="contact-input" placeholder="John Doe">
+                    </div>
+                    <div class="group">
+                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">What's your email?</label>
+                        <input type="email" class="contact-input" placeholder="john@example.com">
+                    </div>
+                    <div class="group">
+                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">What services do you need?</label>
+                        <input type="text" class="contact-input" placeholder="Web Design, Ads, Branding...">
+                    </div>
+                    <div class="group">
+                        <label class="text-xs font-bold uppercase text-gray-500 mb-2 block">Tell us about your project</label>
+                        <textarea class="contact-input resize-none" rows="3" placeholder="Hello Ace Unity..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="bg-[#5542ff] text-white px-10 py-4 rounded-full font-bold text-sm uppercase hover:bg-white hover:text-black transition-all mt-8 w-full md:w-auto">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- NAVIGATION -->
     <nav class="fixed top-0 left-0 w-full px-8 py-6 flex justify-between items-center z-50 mix-blend-difference text-[#DFDFF0]">
@@ -148,9 +255,9 @@
             <a href="#about" class="hover:opacity-50 transition-opacity">About</a>
             <a href="#services" class="hover:opacity-50 transition-opacity">Services</a>
             <a href="#work" class="hover:opacity-50 transition-opacity">Work</a>
-            <a href="#contact" class="hover:opacity-50 transition-opacity">Contact</a>
+            <a onclick="toggleContact()" class="hover:opacity-50 transition-opacity cursor-pointer">Contact</a>
         </div>
-        <button class="bg-[#DFDFF0] text-black px-6 py-2 rounded-full font-bold text-xs uppercase hover:scale-110 transition-transform">
+        <button onclick="toggleContact()" class="bg-[#DFDFF0] text-black px-6 py-2 rounded-full font-bold text-xs uppercase hover:scale-110 transition-transform cursor-pointer">
             Let's Talk
         </button>
     </nav>
@@ -334,11 +441,11 @@
 
         <div class="max-w-7xl mx-auto relative z-10 flex flex-col items-center text-center">
             <p class="text-[#5542ff] font-mono text-sm mb-6">READY TO START?</p>
-            <h2 class="text-special text-5xl md:text-8xl mb-12 hover:text-[#5542ff] transition-colors cursor-pointer">
+            <h2 class="text-special text-5xl md:text-8xl mb-12 hover:text-[#5542ff] transition-colors cursor-pointer" onclick="toggleContact()">
                 LET'S BUILD <br> THE FUTURE.
             </h2>
             
-            <button class="bg-white text-black px-12 py-4 rounded-full font-bold text-lg hover:bg-[#5542ff] hover:text-white transition-all hover:scale-105 duration-300">
+            <button onclick="toggleContact()" class="bg-white text-black px-12 py-4 rounded-full font-bold text-lg hover:bg-[#5542ff] hover:text-white transition-all hover:scale-105 duration-300">
                 Start a Project
             </button>
 
@@ -371,6 +478,23 @@
     <!-- ANIMATION LOGIC -->
     <script>
         gsap.registerPlugin(ScrollTrigger);
+
+        // CONTACT TOGGLE LOGIC
+        let isContactOpen = false; // State tracker
+
+        function toggleContact() {
+            const overlay = document.getElementById('contact-overlay');
+            
+            if (!isContactOpen) {
+                // Open
+                gsap.to(overlay, { y: "0%", duration: 0.8, ease: "power4.inOut" });
+                isContactOpen = true;
+            } else {
+                // Close
+                gsap.to(overlay, { y: "100%", duration: 0.8, ease: "power4.inOut" });
+                isContactOpen = false;
+            }
+        }
 
         // 1. HERO ANIMATION (Fixed Text Fade In)
         const tl = gsap.timeline({
@@ -416,7 +540,7 @@
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
             const target = e.target;
-            if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('.bento-card')) {
+            if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('.bento-card') || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
                 cursor.classList.add('hovered');
             } else {
                 cursor.classList.remove('hovered');
